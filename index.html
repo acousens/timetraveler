@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/pikaday/css/pikaday.css">
+	<link rel="stylesheet" href="assets/css/leaflet.css" />
+	<link href="https://fonts.googleapis.com/css?family=Fira+Mono&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="assets/css/app.css" />
+
+</head>
+<body>
+  <main class="row">
+    <div id="origin" class="cell map-container">
+      <div class="input-box">
+      	<div id='origin-display'>
+        	<p class="display-time"></p>
+        	<p class="display-date"></p>
+      	</div>
+      	<input type="text" id="datepicker" />
+        <select name="time" id="timepicker"></select>
+      </div>
+      <div id="origin-map" class="map"></div>
+    </div>
+
+    <div id="target" class="cell map-container">
+      <div class="input-box">
+        <div id="target-display">
+        	<p class="display-time"></p>
+        	<p class="display-date"></p>
+        </div>
+      </div>
+      <div id="target-map" class="map"></div>
+    </div>
+
+  </main>
+
+  <script src="assets/js/lib/leaflet.js"></script>
+  <script src="assets/js/lib/leaflet-providers.js"></script>
+	<script src="assets/js/lib/moment.min.js"></script>
+	<script src="assets/js/lib/moment-timezone-with-data-10-year-range.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pikaday/pikaday.js"></script>
+  <script src="assets/js/lib/tz.js"></script>
+  <script src="assets/js/lib/modulejs-2.7.0.min.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/map.js"></script>
+  <script src="assets/js/cronos.js"></script>
+	<script src="assets/js/app.js"></script>
+</body>
+</html>

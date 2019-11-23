@@ -1,0 +1,64 @@
+body, html {
+  margin: 0;
+  padding: 0;
+/*   font-family: sans-serif; */
+  font-family: 'Fira Mono', monospace;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+}
+
+.cell {
+  width: 100%;
+  position: relative;
+}
+
+.map-container, .map {
+  height: 50vh;
+  position: relative;
+  z-index: 1;
+}
+
+.input-box {
+  background: #fff;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0px 3px 12px #efefef;
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 2;
+}
+
+.input-box .display-time {
+  margin: 0;
+  line-height: 1;
+  font-size: 1.5rem;
+}
+
+.input-box .display-date {
+  font-size: 0.9rem;
+}
+
+#origin-display [class^="display"] {
+  cursor: pointer;
+}
+
+@media only screen and (min-width:800px) {
+  .row {
+    flex-direction: row
+  }
+  .cell {
+    width: 50%;
+    height: 100vh
+  }
+  .map-container, .map {
+    height: 100vh;
+  }
+  .cell:last-child .input-box {
+    left: auto;
+    right: 1rem;
+  }
+}
