@@ -14,7 +14,8 @@ modulejs.define('cronos', function() {
     target: 'Europe/Paris'
   }
 
-  _self.init = function() {
+  _self.init = function(originZone) {
+    defaults.origin = originZone;
     for (let k in dates) {
       dates[k] = moment();
       updateZone(k, defaults[k]);

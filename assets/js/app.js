@@ -6,9 +6,13 @@
   const ui = modulejs.require('ui');
   const map = modulejs.require('map');
 
-  cronos.init();
+  let zone = moment.tz.guess();
+  let arr = zone.split('/');
+  let city = arr[arr.length-1];
+
+  cronos.init(zone);
   ui.init();
-  map.init();
+  map.init(city);
 
 })()
 
