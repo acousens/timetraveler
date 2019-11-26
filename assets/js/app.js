@@ -15,4 +15,3 @@
   map.init(city);
 
 })()
-
