@@ -10,6 +10,15 @@
 
 </head>
 <body>
+
+	<script>
+		(function() {
+			if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
+	    	window.location.replace(`https://${window.location.host}`)
+	  	}
+		})();
+	</script>
+
   <main class="row">
     <div id="origin" class="cell map-container">
       <div class="input-box">
