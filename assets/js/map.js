@@ -9,7 +9,7 @@ modulejs.define('map', ['ui', 'cronos'], function(ui, cronos) {
     target: null
   }
 
-  _self.init = function(originCity) {
+  _self.init = async function(originCity) {
     maps.origin = L.map('origin-map', {
       center: [40.713955826286046, -73.60839843750001],
       zoom: 6,
@@ -32,29 +32,23 @@ modulejs.define('map', ['ui', 'cronos'], function(ui, cronos) {
       })
     }
 
-    setDefaultCoord(originCity);
+    let lls = await getCityCoords(originCity);
+    panMap('origin', lls);
   }
 
-  async function setDefaultCoord(originCity) {
-    //let url = 'http://secure.geonames.org/citiesJSON?'
-    //north=44.1&south=-9.9&east=-22.4&west=55.2&lang=de
-    //&username=
+  async function getCityCoords(city) {
 
-    let url = 'http://secure.geonames.org/searchJSON?q=';
-    url += encodeURIComponent(originCity);
-    url += '&maxRows=10';
-    url += '&username='
+    let url = `https://us-central1-thisadrian.cloudfunctions.net/timetraveler-geonames?city=${city}`;
 
     try {
-      let response = await fetch(url, {
+      return await fetch(url, {
         method: 'GET',
       }).then(async function(resp) {
         let json = await resp.json();
-        let coords = json.geonames[0];
-        panMap('origin', [coords.lat, coords.lng]);
+        return [json.geonames[0].lat, json.geonames[0].lng];
       })
     } catch(err) {
-
+      debugger
     }
   }
 
