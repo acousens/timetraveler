@@ -23,7 +23,7 @@ modulejs.define('map', ['ui', 'cronos'], function(ui, cronos) {
 
     for (let k in maps) {
 
-      L.tileLayer.provider('Stamen.TonerLite').addTo(maps[k]);
+      L.tileLayer.provider('Esri.WorldTopoMap').addTo(maps[k]);
       L.control.zoom({position: 'bottomright'}).addTo(maps[k]);
 
       maps[k].on('click', function(e) {
