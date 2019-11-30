@@ -39,16 +39,27 @@ modulejs.define('map', ['ui', 'cronos'], function(ui, cronos) {
   async function getCityCoords(city) {
 
     let url = `https://us-central1-thisadrian.cloudfunctions.net/timetraveler-geonames?city=${city}`;
+    if (window.location.hostname === 'localhost') {
+      url = `http://localhost:8080?city=${city}`
+    }
 
     try {
       return await fetch(url, {
         method: 'GET',
       }).then(async function(resp) {
-        let json = await resp.json();
-        return [json.geonames[0].lat, json.geonames[0].lng];
+        if (resp.ok) {
+          let json = await resp.json();
+          if (json.error === undefined) {
+            return [json.geonames[0].lat, json.geonames[0].lng];
+          } else {
+            console.error(resp.error);
+          }
+        } else {
+          console.error(resp);
+        }
       })
     } catch(err) {
-      debugger
+      console.error(err);
     }
   }
 
