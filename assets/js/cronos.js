@@ -6,12 +6,12 @@ modulejs.define('cronos', function() {
 
   let dates = {
     origin: null,
-    target: null
+    dest: null
   }
 
   const defaults = {
     origin: 'America/New_York',
-    target: 'Europe/Paris'
+    dest: 'Europe/Paris'
   }
 
   _self.init = function(originZone) {
@@ -26,25 +26,25 @@ modulejs.define('cronos', function() {
     return dates;
   }
 
-  _self.zoneChanged = function(map, ll) {
-    let latlng = [ll.lat, ll.lng];
-    let zone = tzlookup(latlng[0], latlng[1]);
-    if (map === 'origin') {
+  _self.markerMoved = function(marker, ll) {
+    let zone = getZoneFromCoord(ll)
+    if (marker === 'origin') {
       let clone = dates.origin.clone();
-      updateZone(map, zone)
+      updateZone(marker, zone)
+      // Re-apply current time
       dates.origin
         .hour(clone.hour())
         .minute(clone.minute())
-      refresh('target');
+      updateDest();
     } else {
-      updateZone(map, zone)
+      updateZone(marker, zone)
     }
     return dates;
   }
 
   _self.timeChanged = function(timeString) {
     dates.origin = calcDate(null, timeString);
-    refresh('target');
+    updateDest();
     return dates;
   }
 
@@ -52,20 +52,23 @@ modulejs.define('cronos', function() {
     let zone = dates.origin.tz();
     dates.origin = calcDate(mdate);
     updateZone('origin', zone)
-    refresh('target');
+    updateDest();
     return dates;
   }
 
-  function refresh(map) {
-    if (map === 'target') {
-      let zone = dates.target.tz();
-      dates.target = dates.origin.clone();
-      updateZone(map, zone);
-    }
+  function updateDest() {
+    let zone = dates.dest.tz();
+    dates.dest = dates.origin.clone();
+    updateZone('dest', zone);
   }
 
-  function updateZone(map, zone) {
-    dates[map].tz(zone);
+  function getZoneFromCoord(ll) {
+    let latlng = [ll.lat, ll.lng];
+    return tzlookup(latlng[0], latlng[1]);
+  }
+
+  function updateZone(which, zone) {
+    dates[which].tz(zone);
   }
 
   function calcDate(date=null, timeString=null) {
@@ -86,4 +89,3 @@ modulejs.define('cronos', function() {
   return _self;
 
 });
-
