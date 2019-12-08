@@ -4,36 +4,68 @@ modulejs.define('map', ['ui', 'cronos'], function(ui, cronos) {
 
   const _self = {}
 
-  let maps = {
+  let map = null;
+  let markers = {
     origin: null,
-    target: null
+    dest: null
+  };
+  let arc;
+  let lls = {
+    origin: [40.713955826286046, -73.60839843750001],
+    dest: [48.864714761802794, 2.3730468750000004]
   }
+  let icon = L.divIcon({className: 'div-icon'})
 
   _self.init = async function(originCity) {
-    maps.origin = L.map('origin-map', {
+    map = L.map('map', {
       center: [40.713955826286046, -73.60839843750001],
       zoom: 6,
       zoomControl: false
     })
-    maps.target = L.map('target-map', {
-      center: [48.864714761802794, 2.3730468750000004],
-      zoom: 6,
-      zoomControl: false
-    })
 
-    for (let k in maps) {
+    L.tileLayer.provider('Esri.WorldTopoMap').addTo(map);
+    L.control.zoom({position: 'bottomright'}).addTo(map);
 
-      L.tileLayer.provider('Esri.WorldTopoMap').addTo(maps[k]);
-      L.control.zoom({position: 'bottomright'}).addTo(maps[k]);
-
-      maps[k].on('click', function(e) {
-        let newDates = cronos.zoneChanged(k, e.latlng);
-        ui.updateAll(newDates)
+    for (let k in markers) {
+      markers[k] = L.marker(lls[k], {
+        icon: icon,
+        draggable: true,
+        name: k
+      });
+      markers[k].on('dragend', (e) => {
+        ui.markerMoved(e.target.options.name, e.target._latlng)
       })
+      markers[k].on('drag', (e) => {
+        lls[e.target.options.name] = e.latlng;
+        updateArc();
+      })
+      markers[k].addTo(map)
     }
 
-    let lls = await getCityCoords(originCity);
-    panMap('origin', lls);
+    map.on('click', function(e) {
+
+      //let newDates = cronos.zoneChanged(e.latlng);
+      //ui.updateAll(newDates)
+    })
+
+    let ll = await getCityCoords(originCity);
+    markers.origin.setLatLng(ll)
+    lls.origin = ll;
+    updateArc()
+
+    map.fitBounds([ll, lls.dest])
+    //panMap(ll);
+  }
+
+  function updateArc() {
+    if (arc != undefined) arc.removeFrom(map)
+
+    arc = L.Polyline.Arc(lls.origin, lls.dest, {
+      weight: 1,
+      color: '#4d4d4d',
+      dashArray: '1 3 1',
+      vertices: 200
+    }).addTo(map);
   }
 
   async function getCityCoords(city) {
@@ -63,8 +95,8 @@ modulejs.define('map', ['ui', 'cronos'], function(ui, cronos) {
     }
   }
 
-  function panMap(map, ll) {
-    maps[map].panTo(ll, {animate: false})
+  function panMap(ll) {
+    map.panTo(ll, {animate: false})
   }
 
   return _self;

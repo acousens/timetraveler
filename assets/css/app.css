@@ -5,23 +5,33 @@ body, html {
   font-family: 'Fira Mono', monospace;
 }
 
-.row {
-  display: flex;
-  flex-direction: column;
+h1 {
+  margin: 0;
+  line-height: 1;
+  font-size: 1.5rem;
 }
 
-.cell {
-  width: 100%;
-  position: relative;
+.f-10 {
+  font-size: 10px;
+}
+
+.row {
+  display: flex;
+}
+
+.row.split {
+  justify-content: space-between;
 }
 
 .map-container, .map {
-  height: 50vh;
+  height: 100vh;
   position: relative;
   z-index: 1;
 }
 
 .input-box {
+  width: calc(100% - 4rem);
+  max-width: 400px;
   background: #fff;
   padding: 1rem;
   border-radius: 12px;
@@ -30,12 +40,6 @@ body, html {
   top: 1rem;
   left: 1rem;
   z-index: 2;
-}
-
-.input-box .display-time {
-  margin: 0;
-  line-height: 1;
-  font-size: 1.5rem;
 }
 
 .input-box .display-date {
@@ -52,13 +56,25 @@ body, html {
   }
   .cell {
     width: 50%;
-    height: 100vh
   }
   .map-container, .map {
-    height: 100vh;
+    /* height: 100vh; */
   }
   .cell:last-child .input-box {
     left: auto;
     right: 1rem;
   }
+}
+
+.leaflet-container .leaflet-control-attribution {
+  font-size: 6px;
+}
+
+.div-icon {
+  background: blue;
+  width: 20px;
+  height: 20px;
+}
+.hide {
+  display: none;
 }

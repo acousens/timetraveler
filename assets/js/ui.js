@@ -4,9 +4,17 @@ modulejs.define('ui', ['cronos'], function(cronos) {
 
   const _self = {};
 
-  const displays = {
-    origin: document.getElementById('origin-display'),
-    target: document.getElementById('target-display')
+  const display = {
+    origin: {
+      time: document.querySelector('[data-origin-time]'),
+      date: document.querySelector('[data-origin-date]'),
+      zone: document.querySelector('[data-origin-zone]')
+    },
+    dest: {
+      time: document.querySelector('[data-dest-time]'),
+      date: document.querySelector('[data-dest-date]'),
+      zone: document.querySelector('[data-dest-zone]')
+    }
   }
 
   const datepicker = document.getElementById('datepicker');
@@ -25,13 +33,11 @@ modulejs.define('ui', ['cronos'], function(cronos) {
       }
     });
 
-    let dates = cronos.get()
-    for (let k in dates) {
-      update(k, dates[k])
-    }
+    let moments = cronos.get()
+    update(moments);
 
-    let originHour = dates.origin.hour();
-    let originMinute = dates.origin.minute();
+    let originHour = moments.origin.hour();
+    let originMinute = moments.origin.minute();
 
     let options = timepicker.getElementsByTagName('option')
     let xoption = null;
@@ -50,8 +56,8 @@ modulejs.define('ui', ['cronos'], function(cronos) {
 
         if (xoption === null && originHour === hour && (minute >= originMinute || minute >= 45) ) {
           xoption = document.createElement('option');
-          xoption.textContent = `${dates.origin.format("h:mm a")}`;
-          xoption.value = `${dates.origin.hour()}:${dates.origin.minute()}`;
+          xoption.textContent = `${moments.origin.format("h:mm a")}`;
+          xoption.value = `${moments.origin.hour()}:${moments.origin.minute()}`;
           timepicker.insertBefore(xoption, option)
           timepicker.selectedIndex = option.index - 1;
         }
@@ -62,41 +68,38 @@ modulejs.define('ui', ['cronos'], function(cronos) {
     timepicker.addEventListener('change', timeChanged);
   }
 
-  _self.update = update
-  _self.updateAll = function(data) {
-    for (let k in data) {
-      update(k, data[k])
-    }
-  }
+  _self.markerMoved = markerMoved;
 
   function dateChanged(mdate) {
     let moments = cronos.dateChanged(mdate)
-    for (let k in moments) {
-      update(k, moments[k])
-    }
+    update(moments)
   }
 
   function timeChanged(e) {
     let moments = cronos.timeChanged(e.target.value);
-    for (let k in moments) {
-      update(k, moments[k])
-    }
+    update(moments)
   }
 
-  function update(display, data) {
-    displays[display].getElementsByClassName('display-time')[0]
-      .textContent = formatted(data, 'time');
-    displays[display].getElementsByClassName('display-date')[0]
-      .textContent = formatted(data, 'date');
+  function markerMoved(marker, latlng) {
+    let moments = cronos.markerMoved(marker, latlng);
+    update(moments)
+  }
 
-      //`${formatted(data)} - ${data.tz()}`
+  function update(moments) {
+    let parts = ['time', 'date', 'zone']
+    for (let k in moments) {
+      for (let part of parts) {
+        display[k][part].textContent = formatted(moments[k], part)
+      }
+    }
   }
 
   function formatted(data, part = 'full') {
     let parts = {
       full: data.format("dddd, MMMM Do YYYY, h:mm a"),
       date: data.format("dddd, MMMM Do YYYY"),
-      time: data.format("h:mm a")
+      time: data.format("h:mm a"),
+      zone: data.tz()
     }
     return parts[part]
   }
